@@ -22,22 +22,31 @@ private:
     node_ptr right_ = nullptr;
     node(Elem key, node_ptr parent = nullptr,
       node_ptr left = nullptr, node_ptr right = nullptr) 
-    : key_(key), parent_(parent), left_(left), right_(right) {}
+      : key_(key), parent_(parent), left_(left), right_(right) {}
+    inline void show() const { std::cout << key_; }
+
+    // inline auto right() const { return right_; }
+    // inline auto left() const { return left_; }
+    // inline auto parent() const { return parent_; }
   };
   using node_ptr = typename node::node_ptr;
-  std::shared_ptr<node> root_ = nullptr;
+  node_ptr root_ = nullptr;
 public:
   //template <typename Iterator> binary_tree(Iterator beg, Iterator ed);
   inline binary_tree() = default;
+  inline binary_tree(std::initializer_list<Elem> il);
   inline auto search(const Elem& key) const;
   inline void insert(const Elem& key);
-  inline auto max() const;
-  inline auto min() const;
   inline void show() const;
+  inline auto max() const { return do_max(root_); }
+  inline auto min() const { return do_min(root_); }
+  inline auto successor(const node_ptr&) const;
 private:
   inline auto do_search(const Elem&, const node_ptr&) const;
   inline void do_insert(const Elem&, const node_ptr&);
   inline void do_show(const node_ptr&) const;
+  inline auto do_max(node_ptr) const;
+  inline auto do_min(node_ptr) const;
 };
 
 template<typename Elem>
@@ -48,7 +57,7 @@ auto binary_tree<Elem>::search(const Elem& key) const
 }
 
 template<typename Elem>
-auto binary_tree<Elem>::do_search(const Elem& key, const node_ptr& current) const
+auto binary_tree<Elem>::do_search(const Elem& key, const node_ptr& current)const
 {
   if (!current || current->key_ == key) return current;
   if (key < current->key_) return do_search(key, current->left_);
@@ -94,29 +103,46 @@ void binary_tree<Elem>::do_show(const node_ptr& current) const
 {
   if(!current)  return;
   do_show(current->left_);
-  std::cout << current->key_ << ' ';
+  current->show();
+  std::cout << ' ';
   do_show(current->right_);
 }
-
 template <typename Elem>
-auto binary_tree<Elem>::max() const
+auto binary_tree<Elem>::do_max(node_ptr current) const
 {
-  const auto current_node = root_;
-  while(current_node && current_node->right_){
-    current_node = current_node->right_;
+  while(current && current->right_){
+    current = current->right_;
   }
-  return current_node;
+  return current;
 }
 
 template <typename Elem>
-auto binary_tree<Elem>::min() const
+auto binary_tree<Elem>::do_min(node_ptr current) const
 {
-  const auto current_node = root_;
-  while(current_node && current_node->left_){
-    current_node = current_node->left_;
+  while(current && current->left_){
+    current = current->left_;
   }
-  return current_node;
+  return current;
 }
 
+template<typename Elem>
+auto binary_tree<Elem>::successor(const node_ptr& base) const
+{
+  assert(base);
+  if(base->right_)  return do_min(base->right_);
+  auto parent = base->parent_, r_child = base;
+  while(parent && r_child == base->right_){
+    r_child = parent;
+    parent = parent->parent_;
+  }
+  return parent;
+}
+template <typename Elem>
+binary_tree<Elem>::binary_tree(std::initializer_list<Elem> il)
+{
+  for(const auto& ele : il){
+    insert(ele);
+  }
+}
 }
 #endif
