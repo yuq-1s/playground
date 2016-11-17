@@ -60,6 +60,7 @@ private:
   node_ptr root_ = nullptr;
 public:
   //template <typename Iterator> binary_tree(Iterator beg, Iterator ed);
+  inline auto root() { return root_; }
   inline binary_tree() = default;
   inline binary_tree(std::initializer_list<Elem> il);
   inline auto search(const Elem& key) const;
