@@ -31,7 +31,6 @@ void iterfuck(pnode n)
           currentSnapshot.stage = 1;
           snapshotstack.push(currentSnapshot);
           if(currentSnapshot.n->left_){
-
             snapshotstack.emplace(currentSnapshot.n->left_, 0);
           }
           break;
@@ -39,7 +38,6 @@ void iterfuck(pnode n)
           currentSnapshot.stage = 2;
           snapshotstack.push(currentSnapshot);
           if(currentSnapshot.n->right_){
-
             snapshotstack.emplace(currentSnapshot.n->right_, 0);
           }
           break;
