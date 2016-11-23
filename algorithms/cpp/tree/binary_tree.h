@@ -71,12 +71,14 @@ public:
   inline auto successor(const node_ptr& base) const { return base->successor();}
   inline void remove(node_ptr n);
   inline void remove(const Elem& ele) { remove(search(ele)); }
+  inline void walk() const { walk(root_); }
 private:
   inline node_ptr do_search(const Elem&, const node_ptr&) const;
   inline void do_insert(const Elem&, const node_ptr&);
-  inline void walk(const node_ptr&) const;
-  inline void transplant(node_ptr, node_ptr);
   inline void postorder(node_ptr p, int indent) const;
+protected:
+  inline void transplant(node_ptr, node_ptr);
+  inline void walk(const node_ptr&) const;
 };
 
 template <typename Elem>
